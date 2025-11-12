@@ -3,16 +3,33 @@ from markupsafe import escape
 import pickle
 import numpy as np
 
-app =Flask(__name__)
-model = pickle.load(open("C:\\Users\\as211\\OneDrive\\Desktop\\AI-Powered-Loan Prediction\\model.pkl",'rb'))
+# Use a relative path for portability
+try:
+    with open('model.pkl', 'rb') as model_file:
+        model = pickle.load(model_file)
+except FileNotFoundError:
+    print("ERROR: model.pkl not found. Ensure the model file is in the same directory as Flask_app.py.")
+    model = None # Handle missing model gracefully
+
+app = Flask(__name__)
 
 @app.route('/')
 def home():
     return render_template("index.html")
 
+# NEW ROUTE: For embedding the Streamlit Chatbot
+@app.route('/chatbot')
+def chatbot_page():
+    # Renders the HTML file containing the IFrame to the Streamlit app
+    return render_template("chatbot_page.html")
+
 @app.route('/predict', methods = ["GET","POST"]) #get - typically used to show a blank prediction page or result page. #post-used to submit the form with input values that the server uses to make a prediction.
 def predict():
+    if model is None:
+        return render_template("prediction.html", prediction_text="Error: Prediction model is not loaded.")
+
     if request.method == 'POST':
+        # --- Logic remains untouched ---
         gender = request.form['gender']
         married = request.form['married']
         dependents = request.form['dependents']
@@ -91,10 +108,9 @@ def predict():
             prediction = "No"
         else:
             prediction = "Yes"
-        return render_template("prediction.html",prediction_text="loan status is {}".format(prediction))
+        return render_template("prediction.html",prediction_text="Loan Status is: {}".format(prediction))
     else:
+        # If accessing /predict directly via GET (which shouldn't happen based on the form)
         return render_template("prediction.html")
 if __name__ == "__main__":
     app.run(debug=True)
-    
-        

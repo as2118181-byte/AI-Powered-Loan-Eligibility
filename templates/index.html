@@ -2,80 +2,491 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Eligibility Predictor</title>
+    <!-- Font Awesome for social media icons and general icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Poppins Font for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial; background: #eef3f7; text-align: center; padding: 40px; }
-        form { background: #fff; padding: 25px 40px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
-        input, select { padding: 10px; margin: 10px; width: 220px; border-radius: 5px; border: 1px solid #ccc;}
-        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;}
-        button:hover { background: #0056b3; }
-        #creditValue { font-weight: bold; color: #333; }
+        /* Variables based on the new design */
+        :root {
+            --primary-color: #1f4068; /* Dark Blue */
+            --accent-color: #ff5722; /* Orange Accent */
+            --background-start: #162a40; /* Darker Blue */
+            --background-end: #1f4068;
+            --chatbot-color: #4CAF50; /* Green accent for the Chatbot */
+        }
+
+        /* Base Styling & Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            background: #ffffff;
+            color: var(--primary-color);
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 10;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 20px;
+        }
+        
+        /* Button/Link Styling for Header */
+        .about-btn, .header-link {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 5px;
+            transition: background 0.3s, transform 0.3s;
+            text-decoration: none; 
+            display: inline-block; 
+            font-weight: 500;
+        }
+        .about-btn:hover, .header-link:hover {
+            background: #e64a19;
+            transform: translateY(-1px);
+        }
+        .chatbot-btn {
+            background: var(--chatbot-color);
+        }
+        .chatbot-btn:hover {
+            background: #388E3C;
+        }
+
+
+        /* Form card */
+        form {
+            background: #ffffff;
+            padding: 40px 50px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 400px;
+            max-width: 90%;
+            margin-top: 100px;
+            margin-bottom: 50px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% { transform: scale(0.9) translateY(-20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* Heading */
+        .form-title {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 30px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        /* Input Group/Layout */
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        /* Inputs & selects */
+        input:not([type="range"]), select {
+            padding: 12px;
+            margin: 8px 0;
+            width: calc(100% - 24px);
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(31, 64, 104, 0.2);
+            background: #f7f9fc;
+        }
+
+        /* Button */
+        button[type="submit"] {
+            padding: 14px 30px;
+            margin-top: 25px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background: #162a40;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Credit slider and display */
+        #creditSlider {
+            width: 100%;
+            margin: 15px 0 5px 0;
+        }
+
+        #creditValue {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 20px;
+        }
+        
+        /* Labels */
+        label {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: block;
+            margin-top: 15px;
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            padding: 20px 0;
+            background: #162a40;
+            color: white;
+            text-align: center;
+        }
+        .social-links a {
+            color: white;
+            margin: 0 10px;
+            font-size: 24px;
+            transition: color 0.3s;
+        }
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* Higher margin for the Chatbot Modal */
+            padding: 30px;
+            border-radius: 10px;
+            width: 95%; /* Wider for chatbot */
+            max-width: 900px; /* Max size for chatbot */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s;
+        }
+        
+        /* Chatbot Modal Specific Styles */
+        #chatbotModal .modal-content {
+            padding: 0; /* Remove padding for iframe to fill content */
+            max-width: 900px;
+            height: 90vh;
+            margin: 5vh auto;
+            display: flex;
+            flex-direction: column;
+        }
+        #chatbotModal h2 {
+            padding: 15px 30px;
+            margin: 0;
+            border-bottom: 2px solid var(--chatbot-color);
+            background: #f7f9fc;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        #chatbotModal .close-btn {
+            top: 5px;
+            right: 15px;
+            position: absolute;
+            z-index: 101;
+            color: #333;
+        }
+        .chatbot-iframe {
+            flex-grow: 1; /* Make iframe fill available space */
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            form {
+                padding: 25px 20px;
+                margin-top: 80px;
+            }
+            .form-title {
+                font-size: 24px;
+            }
+            header h1 {
+                margin-right: 0;
+                display: block;
+                margin-bottom: 10px;
+            }
+            .about-btn, .header-link {
+                margin: 0 5px;
+            }
+            #chatbotModal .modal-content {
+                height: 100vh;
+                margin: 0 auto;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Loan Eligibility Predictor</h1>
+    <!-- Header -->
+    <header>
+        <h1>💵 Loan Eligibility Predictor</h1>
+        
+        <!-- CHATBOT LINK now opens the Chatbot Modal -->
+        <a href="#" onclick="document.getElementById('chatbotModal').style.display='block'; return false;" class="header-link chatbot-btn" title="Launch the Chatbot">
+            <i class="fas fa-comments"></i> Chatbot AI
+        </a>
+        
+        <button class="about-btn" onclick="document.getElementById('aboutModal').style.display='block'">
+            About Us
+        </button>
+    </header>
+
     <form action="/predict" method="post" onsubmit="convertCreditValue()">
-        <select name="gender" required>
-            <option value="">Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select><br>
+        <h2 class="form-title">Enter Your Details</h2>
 
-        <select name="married" required>
-            <option value="">Married</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select><br>
+        <div class="input-group">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </div>
 
-        <select name="dependents" required>
-            <option value="">Dependents</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3+">3+</option>
-        </select><br>
+        <div class="input-group">
+            <label for="married">Marital Status</label>
+            <select name="married" id="married" required>
+                <option value="" disabled selected>Select Status</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
 
-        <select name="education" required>
-            <option value="">Education</option>
-            <option value="Graduate">Graduate</option>
-            <option value="Not Graduate">Not Graduate</option>
-        </select><br>
+        <div class="input-group">
+            <label for="dependents">Dependents</label>
+            <select name="dependents" id="dependents" required>
+                <option value="" disabled selected>Number of Dependents</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3+">3+</option>
+            </select>
+        </div>
 
-        <select name="employed" required>
-            <option value="">Self Employed</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select><br>
+        <div class="input-group">
+            <label for="education">Education</label>
+            <select name="education" id="education" required>
+                <option value="" disabled selected>Select Education Level</option>
+                <option value="Graduate">Graduate</option>
+                <option value="Not Graduate">Not Graduate</option>
+            </select>
+        </div>
 
-        <input type="number" name="ApplicantIncome" placeholder="Applicant Income" required><br>
-        <input type="number" name="CoapplicantIncome" placeholder="Coapplicant Income" required><br>
-        <input type="number" name="LoanAmount" placeholder="Loan Amount" required><br>
-        <input type="number" name="Loan_Amount_Term" placeholder="Loan Term (days)" required><br>
+        <div class="input-group">
+            <label for="employed">Self Employed</label>
+            <select name="employed" id="employed" required>
+                <option value="" disabled selected>Are you Self Employed?</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
 
-        <label for="creditSlider">Credit Score (0 - 1000):</label><br>
-        <input type="range" id="creditSlider" name="creditSlider" min="0" max="1000" value="500" oninput="updateCreditValue(this.value)">
-        <p>Credit Score: <span id="creditValue">500</span></p>
-        <input type="hidden" id="credit" name="credit" value="0">
+        <div class="input-group">
+            <label for="ApplicantIncome">Applicant Income</label>
+            <input type="number" name="ApplicantIncome" id="ApplicantIncome" placeholder="Applicant Income" required>
+        </div>
 
-        <select name="area" required>
-            <option value="">Property Area</option>
-            <option value="Rural">Rural</option>
-            <option value="Semiurban">Semiurban</option>
-            <option value="Urban">Urban</option>
-        </select><br>
+        <div class="input-group">
+            <label for="CoapplicantIncome">Coapplicant Income</label>
+            <input type="number" name="CoapplicantIncome" id="CoapplicantIncome" placeholder="Coapplicant Income" required>
+        </div>
 
-        <button type="submit">Check Eligibility</button>
+        <div class="input-group">
+            <label for="LoanAmount">Loan Amount</label>
+            <input type="number" name="LoanAmount" id="LoanAmount" placeholder="Loan Amount" required>
+        </div>
+
+        <div class="input-group">
+            <label for="Loan_Amount_Term">Loan Term (days)</label>
+            <input type="number" name="Loan_Amount_Term" id="Loan_Amount_Term" placeholder="Loan Term (days)" required>
+        </div>
+
+        <!-- Credit Score Slider -->
+        <label for="creditSlider">Credit Score (0 - 1000):</label>
+        <input type="range" id="creditSlider" name="creditSlider" min="0" max="1000" value="750" oninput="updateCreditValue(this.value)">
+        <p>Current Score: <span id="creditValue">750</span></p>
+        <!-- HIDDEN INPUT - THIS INPUT's VALUE ('credit') IS USED BY Flask/Model. Do not change the name. -->
+        <input type="hidden" id="credit" name="credit" value="0"> 
+
+        <div class="input-group">
+            <label for="area">Property Area</label>
+            <select name="area" id="area" required>
+                <option value="" disabled selected>Select Property Area</option>
+                <option value="Rural">Rural</option>
+                <option value="Semiurban">Semiurban</option>
+                <option value="Urban">Urban</option>
+            </select>
+        </div>
+
+        <button type="submit">
+            <i class="fas fa-check-circle"></i> Check Eligibility
+        </button>
     </form>
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Loan Predictor. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://github.com/as2118181-byte" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/arun-sharma-2b87bb384/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="mailto:youremail@example.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+    </footer>
+
+    <!-- About Us Modal (Popup) -->
+    <div id="aboutModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</span>
+        <h2>About This Project 🤖</h2>
+        <p>This Loan Eligibility Predictor is a machine learning-powered tool designed to estimate a user's likelihood of loan approval based on their demographic and financial inputs. It simulates a classification model's decision process.</p>
+        <p>
+            The prediction logic uses a binary indicator for the **Credit Score**, where a score of **850 or higher (out of 1000)** is converted to the value **1**, and any lower score is converted to **0**, matching the original script's logic.
+        </p>
+        <p><strong>Developed by: Arun Sharma</strong></p>
+        <h3>Connect with Us:</h3>
+        <p>
+            <a href="https://github.com/as2118181-byte" target="_blank" style="color:var(--primary-color);"><i class="fab fa-github"></i> GitHub Repository</a><br>
+            <a href="https://www.linkedin.com/in/arun-sharma-2b87bb384/" target="_blank" style="color:var(--primary-color);"><i class="fab fa-linkedin"></i> Our LinkedIn Profile</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- NEW CHATBOT MODAL (Popup) -->
+    <div id="chatbotModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('chatbotModal').style.display='none'">&times;</span>
+            <h2><i class="fas fa-comments"></i> Loan Chatbot Assistant</h2>
+            <!-- 
+                IMPORTANT: This iframe points to the default local address of your Streamlit app.
+                You MUST run 'streamlit run chatbot.py' in a separate terminal for this to work.
+            -->
+            <iframe 
+                src="http://localhost:8501" 
+                class="chatbot-iframe"
+                title="Loan Prediction Chatbot">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- JavaScript - LOGIC REMAINS UNCHANGED -->
     <script>
+        // Function to update the displayed credit score value as the slider moves
         function updateCreditValue(value) {
             document.getElementById("creditValue").textContent = value;
         }
+        
+        // Function to convert the Credit Score slider value (0-1000) into a 
+        // binary value (1 or 0) right before form submission, maintaining the original logic.
         function convertCreditValue(){
             const creditScore = parseInt(document.getElementById('creditSlider').value);
+            // Original Logic: Credit Score is 1 if between 850 and 1000 (inclusive), otherwise 0.
             const creditBinary =(creditScore >= 850 && creditScore <= 1000 ) ? 1 : 0;
             document.getElementById('credit').value = creditBinary;
         }
+
+        // Initialize the credit value display on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialValue = document.getElementById('creditSlider').value;
+            updateCreditValue(initialValue);
+        });
+
+        // Close modal when user clicks outside of it
+        window.onclick = function(event) {
+          const aboutModal = document.getElementById('aboutModal');
+          const chatbotModal = document.getElementById('chatbotModal');
+          
+          if (event.target == aboutModal) {
+            aboutModal.style.display = "none";
+          }
+          if (event.target == chatbotModal) {
+            chatbotModal.style.display = "none";
+          }
+        }
     </script>
-    
 </body>
 </html>
