@@ -1,0 +1,12 @@
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+plotly
+requests
+flask
+google-generativeai==0.8.3
+joblib
+tensorflow
