@@ -3,108 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Prediction Result</title>
-    <!-- Poppins Font for a modern look -->
+    <title>Prediction Result - Loan Eligibility Predictor</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Poppins Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Variables based on the new design */
         :root {
-            --primary-color: #1f4068; /* Dark Blue */
-            --accent-color: #ff5722; /* Orange Accent */
-            --background-start: #162a40; /* Darker Blue */
+            --primary-color: #1f4068;
+            --accent-color: #ff5722;
+            --background-start: #162a40;
             --background-end: #1f4068;
+            --success-color: #4CAF50;
+            --failure-color: #f44336;
         }
 
-        /* Body & Background */
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            margin: 0;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
             color: #333;
         }
 
-        /* Result Card */
-        .result-box {
+        header {
+            width: 100%;
             background: #ffffff;
-            padding: 40px 50px;
-            display: inline-block;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            color: var(--primary-color);
+            padding: 15px 0;
             text-align: center;
-            max-width: 90%;
-            width: 450px;
-            animation: fadeIn 1s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            z-index: 10;
         }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
         }
-
-        /* Heading */
-        h1 { 
-            color: var(--primary-color);
-            font-size: 28px;
-            margin-bottom: 25px;
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 10px;
-        } 
-
-        /* Prediction Text */
-        .prediction-text {
-            font-size: 22px;
-            color: var(--primary-color);
-            font-weight: 600;
-            padding: 15px;
-            border: 1px dashed #ccc;
-            border-radius: 10px;
-            margin: 30px 0;
-            background: #f7f9fc;
-        }
-
-        /* Go Back Button */
-        a { 
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
+        .header-link {
+            background: var(--accent-color);
             color: white;
-            background: var(--accent-color); /* Use accent color for button */
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+        .header-link:hover { background: #e64a19; }
+
+        .result-container {
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            padding: 40px;
+            margin-top: 100px;
+            margin-bottom: 50px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite alternate;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        .result-text h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .result-text p {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .success { color: var(--success-color); }
+        .failure { color: var(--failure-color); }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            background: var(--primary-color);
+            color: white;
             padding: 12px 25px;
             border-radius: 8px;
-            font-size: 16px;
+            text-decoration: none;
             font-weight: 600;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            transition: background 0.3s, transform 0.3s;
         }
+        .back-link:hover { background: #162a40; transform: translateY(-2px); }
 
-        a:hover {
-            background: #e64a19; /* Darker orange on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(255, 87, 34, 0.3);
+        footer {
+            width: 100%;
+            padding: 20px 0;
+            background: #162a40;
+            color: white;
+            text-align: center;
+            margin-top: auto; 
         }
-
-        /* Responsive adjustments */
-        @media (max-width: 500px) {
-            .result-box {
-                padding: 30px 20px;
-            }
-            h1 {
-                font-size: 24px;
-            }
-            .prediction-text {
-                font-size: 18px;
-            }
-        }
+        .social-links a { color: white; margin: 0 10px; font-size: 24px; transition: color 0.3s; }
+        .social-links a:hover { color: var(--accent-color); }
     </style>
 </head>
 <body>
-    <div class="result-box">
-        <h1>Loan Eligibility Result</h1>
-        <p class="prediction-text">{{ prediction_text}}</p>
-        <a href="/">Go Back to Predictor</a>
+    <header>
+        <a href="{{ url_for('home') }}" class="header-link" title="Go to Home"><i class="fas fa-home"></i> Home</a>
+        <h1>💵 Loan Eligibility Predictor</h1>
+        <a href="{{ url_for('logout') }}" class="header-link" title="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </header>
+
+    <div class="result-container">
+        <!-- Extract status from the prediction_text string -->
+        {% set status = prediction_text.split(': ')[1].split(' ')[0] %}
+        {% set full_message = prediction_text %}
+
+        {% if "Yes" in status %}
+        <div class="result-icon success">
+            <i class="fas fa-thumbs-up"></i>
+        </div>
+        <div class="result-text success">
+            <h2>Congratulations! Loan Approved!</h2>
+            <p>{{ full_message }}</p>
+        </div>
+        {% elif "No" in status %}
+        <div class="result-icon failure">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="result-text failure">
+            <h2>Loan Not Approved</h2>
+            <p>{{ full_message }}</p>
+        </div>
+        {% else %}
+        <div class="result-icon failure">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="result-text failure">
+            <h2>Error Processing Prediction</h2>
+            <p>An unexpected error occurred: {{ full_message }}</p>
+        </div>
+        {% endif %}
+        
+        <a href="{{ url_for('home') }}" class="back-link">
+            <i class="fas fa-redo"></i> Check Another Prediction
+        </a>
     </div>
+
+    <footer>
+        <p>&copy; 2025 Loan Predictor. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://github.com/as2118181-byte" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/arun-sharma-2b87bb384/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </footer>
 </body>
 </html>

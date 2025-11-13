@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Logout</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1f4068;
+            --accent-color: #ff5722;
+            --background-start: #162a40;
+            --background-end: #1f4068;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .logout-container {
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .logout-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        .logout-container p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .logout-icon {
+            font-size: 60px;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .home-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .home-link:hover { background: #162a40; transform: translateY(-2px); }
+        .status-message {
+            margin-top: 15px;
+            font-weight: 600;
+            color: #D32F2F;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logout-container">
+        <div class="logout-icon">
+            <i class="fas fa-power-off"></i>
+        </div>
+        <h2 id="logoutHeader">You have been logged out.</h2>
+        <p id="logoutMessage">Thank you for using the Loan Eligibility Predictor.</p>
+        <a href="{{ url_for('login') }}" class="home-link" id="loginAgainButton">
+            <i class="fas fa-sign-in-alt"></i> Log In Again
+        </a>
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+</body>
+</html>
