@@ -17,21 +17,19 @@
         }
         body {
             font-family: 'Poppins', sans-serif;
+            /* Gradient Background for the full page */
             background: linear-gradient(135deg, var(--background-start), var(--background-end));
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Ensure the body covers the full viewport */
+            /* Full viewport size */
             min-height: 100vh;
             margin: 0;
             color: #333;
         }
         .chatbot-container {
             background: #ffffff;
-            /* REMOVED: border-radius: 20px; */
-            /* REMOVED: box-shadow: 0 15px 40px rgba(0,0,0,0.3); */
-            
-            /* --- START: FULL SCREEN CHANGES --- */
+            /* Full screen size */
             width: 100vw;
             max-width: 100vw;
             height: 100vh;
@@ -39,8 +37,6 @@
             max-height: 100vh;
             border-radius: 0;
             box-shadow: none;
-            /* --- END: FULL SCREEN CHANGES --- */
-
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -51,7 +47,7 @@
             100% { opacity: 1; transform: translateY(0); }
         }
         header {
-            background: var(--chatbot-color);
+            background: var(--chatbot-color); /* Green Header */
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -60,7 +56,12 @@
             font-size: 18px;
             font-weight: 600;
         }
-        header a { color: white; text-decoration: none; font-size: 20px; transition: opacity 0.3s; }
+        header a { 
+            color: white; 
+            text-decoration: none; 
+            font-size: 20px; 
+            transition: opacity 0.3s; 
+        }
         header a:hover { opacity: 0.8; }
 
         .chat-body {
@@ -78,16 +79,16 @@
             line-height: 1.4;
         }
         .ai-message {
-            background: #e0f2f1;
+            background: #e0f2f1; /* Light Teal Background */
             align-self: flex-start;
-            border-bottom-left-radius: 5px;
+            border-bottom-left-radius: 5px; /* Square off bottom corner */
             color: var(--primary-color);
         }
         .user-message {
-            background: var(--chatbot-color);
+            background: var(--chatbot-color); /* Green Background */
             color: white;
             align-self: flex-end;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 5px; /* Square off bottom corner */
         }
         
         .input-area {
@@ -108,7 +109,7 @@
             color: var(--primary-color);
             border: 1px solid #ddd;
             padding: 8px 15px;
-            border-radius: 20px;
+            border-radius: 20px; /* Pill shape */
             cursor: pointer;
             transition: all 0.2s;
             font-size: 14px;
@@ -139,13 +140,20 @@
         }
         .submit-button:hover { background: #388E3C; }
 
-        .form-stage { display: none; }
-        .form-stage.active { display: block; }
-        .error-message { color: var(--failure-color); margin-top: 5px; font-size: 14px; }
-
         /* Loader */
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--chatbot-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 10px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader { 
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid var(--chatbot-color); 
+            border-radius: 50%; 
+            width: 20px; 
+            height: 20px; 
+            animation: spin 1s linear infinite; 
+            margin: 10px auto; 
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
     </style>
 </head>
 <body>
@@ -165,7 +173,7 @@
         </div>
 
         <div class="input-area">
-            <form id="predictionForm" action="/predict" method="post">
+            <form id="predictionForm" action="{{ url_for('predict') }}" method="post">
 
                 <input type="hidden" name="gender" id="q_gender" value="">
                 <input type="hidden" name="married" id="q_married" value="">
@@ -289,8 +297,6 @@
                     if (errorElement) errorElement.textContent = 'Please enter a valid, non-negative number.';
                     return;
                 }
-            } else if (q.type === 'select') {
-                // For select, validation is implicit by clicking the button
             } else if (q.id === 'credit') {
                 // Special conversion for Credit History: 1 for good, 0 for bad
                 const score = parseInt(value);

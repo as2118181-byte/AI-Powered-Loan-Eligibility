@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Logout</title>
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Poppins Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -82,13 +80,49 @@
         <div class="logout-icon">
             <i class="fas fa-power-off"></i>
         </div>
-        <h2 id="logoutHeader">You have been logged out.</h2>
-        <p id="logoutMessage">Thank you for using the Loan Eligibility Predictor.</p>
-        <a href="{{ url_for('login') }}" class="home-link" id="loginAgainButton">
+        <h2 id="logoutHeader">Logging out...</h2>
+        <p id="logoutMessage">Please wait while we secure your session.</p>
+        <a href="{{ url_for('login') }}" class="home-link" id="loginAgainButton" style="display:none;">
             <i class="fas fa-sign-in-alt"></i> Log In Again
         </a>
         <div id="statusMessage" class="status-message"></div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script>
+        // Your Web app's Firebase configuration (FROM SCREENSHOT)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtphL89Hn9xLiPm1UIkBnHR_sCt0M5h34",
+            authDomain: "ai-based-loan-prediction.firebaseapp.com",
+            projectId: "ai-based-loan-prediction",
+            storageBucket: "ai-based-loan-prediction.firebasestorage.app",
+            messagingSenderId: "159133794874",
+            appId: "1:159133794874:web:2b48ab0913fcfcbefe6b03",
+            measurementId: "G-SCCV9C7GTL"
+        };
+        
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = app.auth();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('logoutHeader');
+            const message = document.getElementById('logoutMessage');
+            const button = document.getElementById('loginAgainButton');
+
+            // Sign out the user
+            auth.signOut().then(() => {
+                header.textContent = "You have been logged out.";
+                message.textContent = "Your session has been securely terminated. Thank you for using the Loan Eligibility Predictor.";
+                button.style.display = 'inline-block';
+            }).catch((error) => {
+                console.error("Logout Error:", error);
+                header.textContent = "Logout Error.";
+                message.textContent = `An error occurred during logout: ${error.message}. Please try again.`;
+                button.style.display = 'inline-block';
+            });
+        });
+    </script>
 </body>
 </html>

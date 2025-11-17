@@ -19,14 +19,13 @@
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, var(--background-start), var(--background-end));
             margin: 0;
-            /* Ensures body covers full viewport height */
             min-height: 100vh; 
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Aligns content from the top (after header) */
+            justify-content: flex-start;
             align-items: center;
             color: #333;
-            padding-top: 80px; /* Space for the fixed header */
+            padding-top: 80px; 
         }
 
         header {
@@ -81,12 +80,10 @@
             border-radius: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             padding: 40px;
-            /* margin-top: 100px; -- Removed due to padding-top on body */
             margin-bottom: 50px;
             width: 90%;
             max-width: 1200px;
             display: grid;
-            /* Use auto-fit to make it responsive, 250px minimum width */
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
             grid-gap: 30px;
             animation: slideIn 0.8s ease-out;
@@ -110,7 +107,6 @@
         input:focus, select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 10px rgba(31,64,104,0.2); background: #f7f9fc; }
 
         .full-width-control { grid-column: 1/-1; }
-        /* Ensuring the credit slider/value is centered and visually distinct */
         .credit-group-content { 
             display: flex; 
             flex-direction: column; 
@@ -136,7 +132,6 @@
         }
         button[type="submit"]:hover { background: #162a40; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-        /* Credit slider */
         #creditSlider { width: 100%; margin: 10px 0; }
         #creditValue { font-weight: 700; color: var(--accent-color); font-size: 18px; }
 
@@ -169,15 +164,9 @@
     <header>
         <div class="header-content">
             <h1>💵 Loan Eligibility Predictor</h1>
-            <div class="nav-links">
+            <div class="nav-links" id="auth-links">
                 <a href="{{ url_for('chatbot_page') }}" class="header-link chatbot-btn" title="Launch the Chatbot">
                     <i class="fas fa-comments"></i> Chatbot AI
-                </a>
-                <a href="{{ url_for('login') }}" class="header-link" title="User Login">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
-                <a href="{{ url_for('logout') }}" class="header-link" title="User Logout">
-                    <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
                 <button class="about-btn" onclick="document.getElementById('aboutModal').style.display='block'"><i class="fas fa-info-circle"></i> About Us</button>
             </div>
@@ -270,17 +259,17 @@
     </form>
 
     <div id="aboutModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</span>
-        <h2>About This Project 🤖</h2>
-        <p>This Loan Eligibility Predictor is a machine learning-powered tool designed to estimate a user's likelihood of loan approval based on their demographic and financial inputs. It simulates a classification model's decision process.</p>
-        <p><strong>Developed by: Arun Sharma</strong></p>
-        <h3>Connect with Us:</h3>
-        <p>
-            <a href="https://github.com/as2118181-byte" target="_blank" style="color:var(--primary-color);"><i class="fab fa-github"></i> GitHub Repository</a><br>
-            <a href="https://www.linkedin.com/in/arun-sharma-2b87bb384/" target="_blank" style="color:var(--primary-color);"><i class="fab fa-linkedin"></i> Our LinkedIn Profile</a>
-        </p>
-      </div>
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</span>
+            <h2>About This Project 🤖</h2>
+            <p>This Loan Eligibility Predictor is a machine learning-powered tool designed to estimate a user's likelihood of loan approval based on their demographic and financial inputs. It simulates a classification model's decision process.</p>
+            <p><strong>Developed by: Arun Sharma</strong></p>
+            <h3>Connect with Us:</h3>
+            <p>
+                <a href="https://github.com/as2118181-byte" target="_blank" style="color:var(--primary-color);"><i class="fab fa-github"></i> GitHub Repository</a><br>
+                <a href="https://www.linkedin.com/in/arun-sharma-2b87bb384/" target="_blank" style="color:var(--primary-color);"><i class="fab fa-linkedin"></i> Our LinkedIn Profile</a>
+            </p>
+        </div>
     </div>
 
     <footer>
@@ -291,7 +280,26 @@
         </div>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     <script>
+        // Your Web app's Firebase configuration (FROM SCREENSHOT)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtphL89hn9xLlPMIUlkBNhR_sCt0M5h34",
+            authDomain: "ai-based-loan-prediction.firebaseapp.com",
+            projectId: "ai-based-loan-prediction",
+            storageBucket: "ai-based-loan-prediction.firebaseapp.com",
+            messagingSenderId: "159133794874",
+            appId: "1:159133794874:web:2b48ab0913fcfbefe6b03",
+            measurementId: "G-SCCV9C7GTL"
+        };
+        
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = app.auth();
+        const analytics = firebase.analytics();
+
         // Updates the displayed credit score value
         function updateCreditValue(value) { 
             document.getElementById("creditValue").textContent = value; 
@@ -300,8 +308,6 @@
         // Converts the slider value (0-1000) to the binary value (0 or 1) required by the model
         function convertCreditValue(){
             const creditScore = parseInt(document.getElementById('creditSlider').value);
-            // The model expects a binary 'Credit History' feature: 1 (Good) or 0 (Bad/No Credit).
-            // This logic maps a high FICO score (e.g., >= 850) to the binary '1' (Good Credit).
             const creditBinary = (creditScore >= 850) ? 1.0 : 0.0; 
             document.getElementById('credit').value = creditBinary;
         }
@@ -310,8 +316,34 @@
         document.addEventListener('DOMContentLoaded', () => {
             const initialValue = document.getElementById('creditSlider').value;
             updateCreditValue(initialValue);
-            // Ensure the hidden field is set on load too
             convertCreditValue(); 
+
+            // Firebase Auth State Listener to handle Login/Logout links dynamically
+            const authLinks = document.getElementById('auth-links');
+            
+            auth.onAuthStateChanged((user) => {
+                // Remove existing dynamic links
+                const existingAuthLinks = authLinks.querySelectorAll('.dynamic-auth-link');
+                existingAuthLinks.forEach(link => link.remove());
+
+                if (user) {
+                    // User is signed in (Logged In)
+                    const logoutLink = document.createElement('a');
+                    logoutLink.href = "{{ url_for('logout') }}";
+                    logoutLink.className = "header-link dynamic-auth-link";
+                    logoutLink.title = "User Logout";
+                    logoutLink.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+                    authLinks.appendChild(logoutLink);
+                } else {
+                    // User is signed out (Logged Out)
+                    const loginLink = document.createElement('a');
+                    loginLink.href = "{{ url_for('login') }}";
+                    loginLink.className = "header-link dynamic-auth-link";
+                    loginLink.title = "User Login";
+                    loginLink.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                    authLinks.appendChild(loginLink);
+                }
+            });
         });
         
         // Close modal when clicking outside
