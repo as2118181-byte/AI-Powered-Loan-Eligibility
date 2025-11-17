@@ -142,7 +142,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script>
-        // Your Web app's Firebase configuration (FROM SCREENSHOT)
+        // Your Web app's Firebase configuration (UPDATED)
         const firebaseConfig = {
             apiKey: "AIzaSyAtphL89Hn9xLiPm1UIkBnHR_sCt0M5h34",
             authDomain: "ai-based-loan-prediction.firebaseapp.com",
@@ -171,6 +171,14 @@
             loginButton.disabled = disabled;
         }
 
+        // --- Redirection Logic on Login Page ---
+        // If user is already logged in, redirect to the home page immediately
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = '{{ url_for("home") }}';
+            }
+        });
+
         async function handleLogin() {
             const email = emailInput.value;
             const password = passwordInput.value;
@@ -189,6 +197,7 @@
                 setStatus("Login successful! Redirecting...", true);
                 
                 setTimeout(() => {
+                    // Redirect to home upon successful login
                     window.location.href = "{{ url_for('home') }}";
                 }, 500);
 
